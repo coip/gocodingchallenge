@@ -9,7 +9,7 @@ import (
 	_ "github.com/lib/pq"
 
 	//"github.com/rackerlabs/GoCodingChallenge/todo"
-        "github.com/coip/gocodingchallenge"
+        "github.com/coip/gocodingchallenge/todo"
 )
 
 // Status :=
