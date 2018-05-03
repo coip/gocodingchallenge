@@ -1,3 +1,20 @@
+# Results
+(due to env configuration issues I abandoned docker containerization for services, using local go/postgres)
+
+Added 2 Routes:
+- Update Method: '/todo/{todoID}' (takes CreateTodo Model payload) 
+- Delete Method: '/todo/{todoID}' (no payload)
+
+Might consider benefit of:
+- the Update func in todo/handlers.go could use similar 404 logic that is seen in Delete.(check for result from query)
+- ORM/other means of abstraction for DB interactions.
+
+
+bugfixes:
+- corrected the allowedStatuses check logic
+- similarly, addressed multiple-response error (no longer sends many responses to one req due to mutually exlcusive conditional blocks)
+
+
 # Golang Coding Challenge
 
 Hi! Welcome to the Golang coding challenge. Below is a set of instructions that must attempt to complete within 3 days. Fork the repo when you're ready and good luck! 😀
