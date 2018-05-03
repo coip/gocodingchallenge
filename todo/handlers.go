@@ -135,22 +135,21 @@ func Update(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 			http.Error(w, "The provided status is not supported", http.StatusBadRequest)
 		} else {
 			var resultingTodo Todo
-    		fmt.Printf("updating todoID %s", params.ByName("todoID"))
 			updateStmt := fmt.Sprintf(`UPDATE todo SET title = '%s', status = '%s' WHERE id = %s RETURNING id, title, status;`, todo.Title, todo.Status, params.ByName("todoID"))
-		    fmt.Printf("update sttm: %s", updateStmt)
 
-			// Insert and get back newly created todo ID
+			// Update todo and return the new DB entry
 			if err := db.QueryRow(updateStmt).Scan(&resultingTodo.ID, &resultingTodo.Title, &resultingTodo.Status); err != nil {
 				fmt.Printf("Failed to save to db: %s", err.Error())
+				http.Error(w, "failed in Update handler, likely found no todo to update? check log.", 500)
+			} else {
+				fmt.Printf("Todo Updated -- id: %s\n", params.ByName("todoID"))
+
+				jsonResp, _ := json.Marshal(resultingTodo)
+
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(200)
+				fmt.Fprintf(w, string(jsonResp))
 			}
-
-			fmt.Printf("Todo Updated -- id: %s\n", params.ByName("todoID"))
-
-			jsonResp, _ := json.Marshal(resultingTodo)
-
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(200)
-			fmt.Fprintf(w, string(jsonResp))
 		}
 	}
 }
@@ -159,7 +158,6 @@ func Delete(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	dbHost := "localhost"
 	dbPassword := "b4n4n4s"
 	dbName := "postgres"
-	fmt.Println("in delete, delete %s", params.ByName("todoID"))
 
 	dbinfo := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbUser, dbPassword, dbName)
 
@@ -177,13 +175,16 @@ func Delete(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	count, err := res.RowsAffected()
 	if err != nil {
 		fmt.Printf("Failed to save to db: %s", err.Error())
-	} 
-	
-	if count == 0 {
-		http.Error(w, "No todo found", 404)
+		http.Error(w, "failed in Delete handler, likely found no todo to delete? check log.", 500 )
 	} else {
-	fmt.Printf("Todo Deleted -- id: %s\n record removed %d", params.ByName("todoID"), int(count))
-	w.WriteHeader(200)
-	fmt.Fprint(w, "OK\n")
+	
+	 	if count == 0 { 
+			http.Error(w, "No todo found", 404)
+		} else {
+			//using count here as a quick n' dirty approach to satisfy the compiler, forgive me.
+			fmt.Printf("Todo Deleted -- id: %s, %d record removed", params.ByName("todoID"), int(count))
+			w.WriteHeader(200)
+			fmt.Fprint(w, "OK\n")
+		}
 	}
 }
