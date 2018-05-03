@@ -22,4 +22,4 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./:/go/src/github.com/rackerlabs/GoCodingChallenge
+      - ./:/go/src/github.com/coip/gocodingchallenge

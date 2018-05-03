@@ -8,7 +8,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/lib/pq"
 
-	"github.com/rackerlabs/GoCodingChallenge/todo"
+	//"github.com/rackerlabs/GoCodingChallenge/todo"
+        "github.com/coip/gocodingchallenge"
 )
 
 // Status :=
