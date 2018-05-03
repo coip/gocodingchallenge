@@ -9,7 +9,7 @@ import (
 	_ "github.com/lib/pq"
 
 	//"github.com/rackerlabs/GoCodingChallenge/todo"
-        "github.com/coip/gocodingchallenge/todo"
+    "github.com/coip/gocodingchallenge/todo"
 )
 
 // Status :=
@@ -24,6 +24,8 @@ func main() {
 	router.GET("/", Status)
 	router.POST("/todos", todo.Create)
 	router.GET("/todos", todo.List)
+	router.PUT("/todos/:todoID", todo.Update)
+	router.DELETE("/todos/:todoID", todo.Delete)
 
 	log.Println("Starting server...")
 
